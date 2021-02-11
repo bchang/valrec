@@ -4,6 +4,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.anychart.AnyChart
+import com.anychart.data.Set
+import com.anychart.chart.common.dataentry.ValueDataEntry
+import com.anychart.charts.Cartesian
+import com.github.bchang.valrec.datastore.RowValue
 import com.github.bchang.valrec.datastore.sample.SampleDataStore
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         values_table.adapter = ValuesTableAdapter(dataStore.getAll())
+        values_chart.setChart(loadChart(dataStore.getAll()))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -45,4 +51,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun loadChart(dataSet: List<RowValue>): Cartesian {
+        val cartesian = AnyChart.line()
+        cartesian.animation(true)
+        cartesian.title("Values over time")
+        cartesian.yAxis(0, "Value")
+        cartesian.xAxis(0, "Date")
+
+        val acSet = Set.instantiate()
+        acSet.data(dataSet.map { row ->
+            ValueDataEntry(row.timestamp.toString(), row.value)
+        })
+
+        val mapping = acSet.mapAs("{ x: 'x', value: 'value' }")
+        val series = cartesian.line(mapping)
+        series.name("Value")
+
+        return cartesian
+    }
 }
