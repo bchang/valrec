@@ -3,25 +3,24 @@ package com.github.bchang.valrec
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.*
 import com.anychart.AnyChart
-import com.anychart.data.Set
 import com.anychart.chart.common.dataentry.ValueDataEntry
 import com.anychart.charts.Cartesian
+import com.anychart.data.Set
 import com.github.bchang.valrec.datastore.RowValue
 import com.github.bchang.valrec.datastore.sample.SampleDataStore
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var dataStore: SampleDataStore
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: Use dependency injection.
-        dataStore = SampleDataStore()
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
@@ -31,13 +30,15 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
 
-        values_table.adapter = ValuesTableAdapter(dataStore.getAll())
-        values_chart.setChart(loadChart(dataStore.getAll()))
+        val viewModel by viewModels<DataStoreViewModel>()
+        viewModel.getAllValues().observe(this, Observer {
+            values_table.adapter = ValuesTableAdapter(it)
+            values_chart.setChart(loadChart(it))
+        })
+        viewModel.load()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
@@ -68,5 +69,20 @@ class MainActivity : AppCompatActivity() {
         series.name("Value")
 
         return cartesian
+    }
+
+    internal class DataStoreViewModel : ViewModel() {
+        private val allValues = MutableLiveData<List<RowValue>>()
+
+        fun getAllValues(): LiveData<List<RowValue>> {
+            return allValues
+        }
+
+        fun load() {
+            viewModelScope.launch {
+                val dataStore = SampleDataStore()
+                allValues.value = dataStore.getAll()
+            }
+        }
     }
 }
