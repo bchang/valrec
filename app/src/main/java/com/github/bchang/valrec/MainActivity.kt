@@ -1,18 +1,23 @@
 package com.github.bchang.valrec
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.github.bchang.valrec.datastore.sample.SampleDataStore
-
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var dataStore: SampleDataStore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // TODO: Use dependency injection.
+        dataStore = SampleDataStore()
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -21,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
 
-        @Suppress("UNUSED_VARIABLE") val dataStore = SampleDataStore()
+        values_table.adapter = ValuesTableAdapter(dataStore.getAll())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -39,4 +44,5 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 }

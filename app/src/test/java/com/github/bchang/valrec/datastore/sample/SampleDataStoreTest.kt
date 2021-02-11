@@ -15,6 +15,8 @@ internal class SampleDataStoreTest {
     fun values() {
         val dataStore = SampleDataStore()
         val values = dataStore.getAll().map { rowValue -> rowValue.value }
-        assertThat(values).isEqualTo(listOf(1, 2, 4, 8))
+        assertThat(values)
+            .containsAtLeast(1, 2, 4, 8)
+            .inOrder()
     }
 }
