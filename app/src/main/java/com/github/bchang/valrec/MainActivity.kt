@@ -6,34 +6,38 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView
 import com.anychart.AnyChart
+import com.anychart.AnyChartView
 import com.anychart.chart.common.dataentry.ValueDataEntry
 import com.anychart.charts.Cartesian
 import com.anychart.data.Set
+import com.github.bchang.valrec.databinding.ActivityMainBinding
 import com.github.bchang.valrec.datastore.RowValue
 import com.github.bchang.valrec.datastore.sample.SampleDataStore
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-
-        fab.setOnClickListener { view ->
+        binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
         val viewModel by viewModels<DataStoreViewModel>()
+        val valuesTable: RecyclerView = binding.root.findViewById(R.id.values_table)
+        val valuesChart: AnyChartView = binding.root.findViewById(R.id.values_chart)
         viewModel.getAllValues().observe(this, Observer {
-            values_table.adapter = ValuesTableAdapter(it)
-            values_chart.setChart(loadChart(it))
+            valuesTable.adapter = ValuesTableAdapter(it)
+            valuesChart.setChart(loadChart(it))
         })
         viewModel.load()
     }
