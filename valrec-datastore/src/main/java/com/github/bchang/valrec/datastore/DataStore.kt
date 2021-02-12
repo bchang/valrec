@@ -1,9 +1,16 @@
 package com.github.bchang.valrec.datastore
 
-import java.time.Instant
+import android.content.Context
+import androidx.room.Room
 
-data class RowValue(val timestamp: Instant, val value: Number)
+class DataStore(applicationContext: Context) {
+    private val appDatabase = Room.databaseBuilder(
+        applicationContext,
+        AppDatabase::class.java,
+        "valrec"
+    ).build()
 
-interface DataStore {
-    fun getAll(): List<RowValue>
+    suspend fun getAll(): List<Record> {
+        return appDatabase.recordDao().getAll()
+    }
 }

@@ -12,7 +12,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/valrec-datastore" />
-            <option value="$PROJECT_DIR$/valrec-datastore-sample" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

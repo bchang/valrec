@@ -1,4 +1,3 @@
 include ':app'
 include ':valrec-datastore'
-include ':valrec-datastore-sample'
 rootProject.name='Value Recorder'

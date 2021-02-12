@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.bchang.valrec.databinding.ValuesTableRowItemBinding
-import com.github.bchang.valrec.datastore.RowValue
+import com.github.bchang.valrec.datastore.Record
 
-internal class ValuesTableAdapter(private val dataSet: List<RowValue>) :
+internal class ValuesTableAdapter(private val dataSet: List<Record>) :
     RecyclerView.Adapter<ValuesTableAdapter.ViewHolder>() {
 
     class ViewHolder(private val binding: ValuesTableRowItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(rowValue: RowValue) {
-            binding.timestamp.text = rowValue.timestamp.toString()
-            binding.value.text = rowValue.value.toString()
+        fun bind(record: Record) {
+            binding.timestamp.text = record.timestamp().toString()
+            binding.value.text = record.value.toString()
         }
     }
 

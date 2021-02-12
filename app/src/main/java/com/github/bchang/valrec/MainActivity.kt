@@ -1,5 +1,6 @@
 package com.github.bchang.valrec
 
+import android.app.Application
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,8 +14,8 @@ import com.anychart.chart.common.dataentry.ValueDataEntry
 import com.anychart.charts.Cartesian
 import com.anychart.data.Set
 import com.github.bchang.valrec.databinding.ActivityMainBinding
-import com.github.bchang.valrec.datastore.RowValue
-import com.github.bchang.valrec.datastore.sample.SampleDataStore
+import com.github.bchang.valrec.datastore.DataStore
+import com.github.bchang.valrec.datastore.Record
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         val viewModel by viewModels<DataStoreViewModel>()
         val valuesTable: RecyclerView = binding.root.findViewById(R.id.values_table)
         val valuesChart: AnyChartView = binding.root.findViewById(R.id.values_chart)
-        viewModel.getAllValues().observe(this, Observer {
+        viewModel.getAllRecords().observe(this, Observer {
             valuesTable.adapter = ValuesTableAdapter(it)
             valuesChart.setChart(loadChart(it))
         })
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun loadChart(dataSet: List<RowValue>): Cartesian {
+    fun loadChart(records: List<Record>): Cartesian {
         val cartesian = AnyChart.line()
         cartesian.animation(true)
         cartesian.title("Values over time")
@@ -64,8 +65,8 @@ class MainActivity : AppCompatActivity() {
         cartesian.xAxis(0, "Date")
 
         val acSet = Set.instantiate()
-        acSet.data(dataSet.map { row ->
-            ValueDataEntry(row.timestamp.toString(), row.value)
+        acSet.data(records.map {
+            ValueDataEntry(it.timestamp().toString(), it.value)
         })
 
         val mapping = acSet.mapAs("{ x: 'x', value: 'value' }")
@@ -75,17 +76,17 @@ class MainActivity : AppCompatActivity() {
         return cartesian
     }
 
-    internal class DataStoreViewModel : ViewModel() {
-        private val allValues = MutableLiveData<List<RowValue>>()
+    internal class DataStoreViewModel(application: Application) : AndroidViewModel(application) {
+        private val dataStore = DataStore(application)
+        private val allRecords = MutableLiveData<List<Record>>()
 
-        fun getAllValues(): LiveData<List<RowValue>> {
-            return allValues
+        fun getAllRecords(): LiveData<List<Record>> {
+            return allRecords
         }
 
         fun load() {
             viewModelScope.launch {
-                val dataStore = SampleDataStore()
-                allValues.value = dataStore.getAll()
+                allRecords.value = dataStore.getAll()
             }
         }
     }
