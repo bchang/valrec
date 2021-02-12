@@ -1,30 +1,29 @@
 package com.github.bchang.valrec
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.bchang.valrec.databinding.ValuesTableRowItemBinding
 import com.github.bchang.valrec.datastore.RowValue
 
 internal class ValuesTableAdapter(private val dataSet: List<RowValue>) :
     RecyclerView.Adapter<ValuesTableAdapter.ViewHolder>() {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val timestampTextView: TextView = view.findViewById(R.id.timestamp)
-        val valueTextView: TextView = view.findViewById(R.id.value)
+    class ViewHolder(private val binding: ValuesTableRowItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(rowValue: RowValue) {
+            binding.timestamp.text = rowValue.timestamp.toString()
+            binding.value.text = rowValue.value.toString()
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.values_table_row_item, viewGroup, false)
-
-        return ViewHolder(view)
+        val binding = ValuesTableRowItemBinding.inflate(LayoutInflater.from(viewGroup.context))
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.timestampTextView.text = dataSet[position].timestamp.toString()
-        viewHolder.valueTextView.text = dataSet[position].value.toString()
+        viewHolder.bind(dataSet[position])
     }
 
     override fun getItemCount() = dataSet.size
