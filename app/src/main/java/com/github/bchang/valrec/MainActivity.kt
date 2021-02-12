@@ -16,8 +16,8 @@ import com.anychart.data.Set
 import com.github.bchang.valrec.databinding.ActivityMainBinding
 import com.github.bchang.valrec.datastore.DataStore
 import com.github.bchang.valrec.datastore.Record
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import java.time.Instant
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -27,13 +27,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        val viewModel by viewModels<DataStoreViewModel>()
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        binding.fab.setOnClickListener {
+            viewModel.addRecord()
         }
 
-        val viewModel by viewModels<DataStoreViewModel>()
         val valuesTable: RecyclerView = binding.root.findViewById(R.id.values_table)
         val valuesChart: AnyChartView = binding.root.findViewById(R.id.values_chart)
         viewModel.getAllRecords().observe(this, Observer {
@@ -82,6 +81,13 @@ class MainActivity : AppCompatActivity() {
 
         fun getAllRecords(): LiveData<List<Record>> {
             return allRecords
+        }
+
+        fun addRecord() {
+            viewModelScope.launch {
+                dataStore.insert(Record(0, Instant.now().epochSecond, 3))
+                allRecords.value = dataStore.getAll()
+            }
         }
 
         fun load() {

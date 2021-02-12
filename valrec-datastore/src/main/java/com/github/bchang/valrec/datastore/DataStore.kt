@@ -13,4 +13,8 @@ class DataStore(applicationContext: Context) {
     suspend fun getAll(): List<Record> {
         return appDatabase.recordDao().getAll()
     }
+
+    suspend fun insert(record: Record) {
+        return appDatabase.recordDao().insert(record)
+    }
 }

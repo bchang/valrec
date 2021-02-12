@@ -7,7 +7,7 @@ import java.time.Instant
 
 @Entity
 data class Record(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val uid: Long,
     @ColumnInfo(name = "ts_epoch_second") val tsEpochSecond: Long,
     @ColumnInfo(name = "int_value") val value: Int) {
 
