@@ -16,6 +16,7 @@ import com.anychart.data.Set
 import com.github.bchang.valrec.databinding.ActivityMainBinding
 import com.github.bchang.valrec.datastore.DataStore
 import com.github.bchang.valrec.datastore.Record
+import com.github.bchang.valrec.widget.table.ValuesTableAdapter
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -34,9 +35,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val valuesTable: RecyclerView = binding.root.findViewById(R.id.values_table)
+        val valuesTableAdapter = ValuesTableAdapter()
+        valuesTable.adapter = valuesTableAdapter
+
         val valuesChart: AnyChartView = binding.root.findViewById(R.id.values_chart)
         viewModel.getAllRecords().observe(this, Observer {
-            valuesTable.adapter = ValuesTableAdapter(it)
+            valuesTableAdapter.setRecords(it)
             valuesChart.setChart(loadChart(it))
         })
         viewModel.load()
