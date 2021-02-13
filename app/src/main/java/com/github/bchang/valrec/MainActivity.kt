@@ -8,14 +8,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
-import com.anychart.AnyChart
-import com.anychart.AnyChartView
-import com.anychart.chart.common.dataentry.ValueDataEntry
-import com.anychart.charts.Cartesian
-import com.anychart.data.Set
 import com.github.bchang.valrec.databinding.ActivityMainBinding
 import com.github.bchang.valrec.datastore.DataStore
 import com.github.bchang.valrec.datastore.Record
+import com.github.bchang.valrec.widget.chart.ValuesChart
 import com.github.bchang.valrec.widget.table.ValuesTableAdapter
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -38,10 +34,11 @@ class MainActivity : AppCompatActivity() {
         val valuesTableAdapter = ValuesTableAdapter()
         valuesTable.adapter = valuesTableAdapter
 
-        val valuesChart: AnyChartView = binding.root.findViewById(R.id.values_chart)
+        val valuesChart: ValuesChart = binding.root.findViewById(R.id.values_chart)
+
         viewModel.getAllRecords().observe(this, Observer {
             valuesTableAdapter.setRecords(it)
-            valuesChart.setChart(loadChart(it))
+            valuesChart.setRecords(it)
         })
         viewModel.load()
     }
@@ -58,25 +55,6 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    fun loadChart(records: List<Record>): Cartesian {
-        val cartesian = AnyChart.line()
-        cartesian.animation(true)
-        cartesian.title("Values over time")
-        cartesian.yAxis(0, "Value")
-        cartesian.xAxis(0, "Date")
-
-        val acSet = Set.instantiate()
-        acSet.data(records.map {
-            ValueDataEntry(it.timestamp().toString(), it.value)
-        })
-
-        val mapping = acSet.mapAs("{ x: 'x', value: 'value' }")
-        val series = cartesian.line(mapping)
-        series.name("Value")
-
-        return cartesian
     }
 
     internal class DataStoreViewModel(application: Application) : AndroidViewModel(application) {

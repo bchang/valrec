@@ -1,4 +1,5 @@
 include ':app'
 include ':valrec-datastore'
+include ':valrec-widget-chart'
 include ':valrec-widget-table'
 rootProject.name='Value Recorder'
