@@ -2,12 +2,14 @@ package com.github.bchang.valrec.widget.table
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.bchang.valrec.widget.table.databinding.ValuesTableRowItemBinding
 import com.github.bchang.valrec.datastore.Record
 
-class ValuesTableAdapter() :
-    RecyclerView.Adapter<ValuesTableAdapter.ViewHolder>() {
+class ValuesTableAdapter :
+    RecyclerView.Adapter<ValuesTableAdapter.ViewHolder>(),
+    Observer<List<Record>> {
     var dataSet = emptyList<Record>()
 
     class ViewHolder(private val binding: ValuesTableRowItemBinding) :
@@ -18,7 +20,7 @@ class ValuesTableAdapter() :
         }
     }
 
-    fun setRecords(records: List<Record>) {
+    override fun onChanged(records: List<Record>) {
         this.dataSet = records
         notifyDataSetChanged()
     }

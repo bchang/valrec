@@ -36,10 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         val valuesChart: ValuesChart = binding.root.findViewById(R.id.values_chart)
 
-        viewModel.getAllRecords().observe(this, Observer {
-            valuesTableAdapter.setRecords(it)
-            valuesChart.setRecords(it)
-        })
+        viewModel.getAllRecords().observe(this, valuesTableAdapter)
+        viewModel.getAllRecords().observe(this, valuesChart)
         viewModel.load()
     }
 
