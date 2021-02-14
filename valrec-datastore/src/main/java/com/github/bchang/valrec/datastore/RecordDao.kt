@@ -3,6 +3,7 @@ package com.github.bchang.valrec.datastore
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 
 @Dao
 internal interface RecordDao {
@@ -11,4 +12,10 @@ internal interface RecordDao {
 
     @Insert
     fun insert(record: Record)
+
+    @Transaction
+    fun insertAndGetAll(record: Record): List<Record> {
+        insert(record)
+        return getAll()
+    }
 }
