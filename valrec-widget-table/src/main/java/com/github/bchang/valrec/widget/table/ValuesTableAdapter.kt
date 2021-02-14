@@ -15,7 +15,7 @@ class ValuesTableAdapter :
     class ViewHolder(private val binding: ValuesTableRowItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(record: Record) {
-            binding.timestamp.text = record.timestamp().toString()
+            binding.timestamp.text = record.timestamp.toString()
             binding.value.text = record.value.toString()
         }
     }

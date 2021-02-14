@@ -33,7 +33,7 @@ class ValuesChart @JvmOverloads constructor(
     override fun onChanged(records: List<Record>) {
         val acSet = Set.instantiate()
         acSet.data(records.map {
-            ValueDataEntry(it.timestamp().toString(), it.value)
+            ValueDataEntry(it.timestamp.toString(), it.value)
         })
 
         cartesian.removeAllSeries().addSeries(acSet)
