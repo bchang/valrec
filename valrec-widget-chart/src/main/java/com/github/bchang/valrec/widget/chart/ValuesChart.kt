@@ -7,7 +7,6 @@ import androidx.lifecycle.Observer
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
 import com.anychart.chart.common.dataentry.ValueDataEntry
-import com.anychart.charts.Cartesian
 import com.anychart.data.Set
 import com.github.bchang.valrec.datastore.Record
 
@@ -19,31 +18,24 @@ class ValuesChart @JvmOverloads constructor(
     Observer<List<Record>> {
 
     private val anyChartView = AnyChartView(context, attrs, defStyleAttr)
+    private val cartesian = AnyChart.line()
 
     init {
         addView(anyChartView)
-    }
 
-    override fun onChanged(records: List<Record>) {
-        anyChartView.setChart(loadChart(records))
-    }
-
-    private fun loadChart(records: List<Record>): Cartesian {
-        val cartesian = AnyChart.line()
         cartesian.animation(true)
         cartesian.title("Values over time")
         cartesian.yAxis(0, "Value")
         cartesian.xAxis(0, "Date")
+        anyChartView.setChart(cartesian)
+    }
 
+    override fun onChanged(records: List<Record>) {
         val acSet = Set.instantiate()
         acSet.data(records.map {
             ValueDataEntry(it.timestamp().toString(), it.value)
         })
 
-        val mapping = acSet.mapAs("{ x: 'x', value: 'value' }")
-        val series = cartesian.line(mapping)
-        series.name("Value")
-
-        return cartesian
+        cartesian.removeAllSeries().addSeries(acSet)
     }
 }
