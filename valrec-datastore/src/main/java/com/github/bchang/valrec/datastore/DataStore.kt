@@ -2,6 +2,8 @@ package com.github.bchang.valrec.datastore
 
 import android.content.Context
 import androidx.room.Room
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DataStore(applicationContext: Context) {
     private val appDatabase = Room.databaseBuilder(
@@ -11,10 +13,14 @@ class DataStore(applicationContext: Context) {
     ).build()
 
     suspend fun getAll(): List<Record> {
-        return appDatabase.recordDao().getAll()
+        return withContext(Dispatchers.IO) {
+            appDatabase.recordDao().getAll()
+        }
     }
 
     suspend fun insert(record: Record) {
-        return appDatabase.recordDao().insert(record)
+        return withContext(Dispatchers.IO) {
+            appDatabase.recordDao().insert(record)
+        }
     }
 }
