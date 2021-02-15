@@ -10,12 +10,15 @@ internal interface RecordDao {
     @Query("SELECT * FROM record")
     fun getAll(): List<Record>
 
+    @Query("SELECT * FROM record WHERE uid = :recordId")
+    fun get(recordId: Long): Record
+
     @Insert
-    fun insert(record: Record)
+    fun insert(record: Record): Long
 
     @Transaction
-    fun insertAndGetAll(record: Record): List<Record> {
-        insert(record)
-        return getAll()
+    fun insertAndGet(record: Record): Record {
+        val recordId = insert(record)
+        return get(recordId)
     }
 }

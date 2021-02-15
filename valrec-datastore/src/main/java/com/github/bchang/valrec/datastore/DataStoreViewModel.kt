@@ -28,10 +28,12 @@ class DataStoreViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun insert(record: Record) {
         viewModelScope.launch {
-            val records = withContext(Dispatchers.IO) {
-                appDatabase.recordDao().insertAndGetAll(record)
+            val inserted = withContext(Dispatchers.IO) {
+                appDatabase.recordDao().insertAndGet(record)
             }
-            this@DataStoreViewModel.records.value = records
+            val currentList = this@DataStoreViewModel.records.value
+            this@DataStoreViewModel.records.value =
+                currentList?.plus(inserted) ?: listOf(inserted)
         }
     }
 }

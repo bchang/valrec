@@ -30,10 +30,28 @@ class AppDatabaseTest {
     }
 
     @Test
-    fun insertAndGetAll() {
-        val records = recordDao.insertAndGetAll(
+    fun insert() {
+        val recordId = recordDao.insert(
             Record(0, 2, 3))
-        assertThat(records).containsExactly(
+        assertThat(recordId).isEqualTo(1)
+        assertThat(recordDao.getAll()).containsExactly(
             Record(1, 2, 3))
+    }
+
+    @Test
+    fun insertAndGet() {
+        val record1 = recordDao.insertAndGet(
+            Record(0, 2, 3))
+        assertThat(record1).isEqualTo(
+            Record(1, 2, 3))
+
+        val record2 = recordDao.insertAndGet(
+            Record(0, 2, 3))
+        assertThat(record2).isEqualTo(
+            Record(2, 2, 3))
+
+        assertThat(recordDao.getAll()).containsExactly(
+            Record(1, 2, 3),
+            Record(2, 2, 3))
     }
 }

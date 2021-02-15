@@ -9,8 +9,10 @@ import java.time.Instant
 @Entity
 data class Record(
     @PrimaryKey(autoGenerate = true) val uid: Long,
-    @ColumnInfo(name = "ts_epoch_second") val tsEpochSecond: Long,
-    @ColumnInfo(name = "int_value") val value: Int) {
+    val tsEpochSecond: Long,
+    val value: Int
+) {
 
-    @Ignore val timestamp: Instant = Instant.ofEpochSecond(tsEpochSecond)
+    @Ignore
+    val timestamp: Instant = Instant.ofEpochSecond(tsEpochSecond)
 }
