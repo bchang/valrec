@@ -1,18 +1,21 @@
 package com.github.bchang.valrec.datastore
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.time.Instant
 
+fun createRecord(timestamp: Instant, value: Int): Record {
+    return Record(0, timestamp.toEpochMilli(), value)
+}
+
 @Entity
-data class Record(
+data class Record internal constructor(
     @PrimaryKey(autoGenerate = true) val uid: Long,
-    val tsEpochSecond: Long,
+    val tsEpochMilli: Long,
     val value: Int
 ) {
 
     @Ignore
-    val timestamp: Instant = Instant.ofEpochSecond(tsEpochSecond)
+    val timestamp: Instant = Instant.ofEpochMilli(tsEpochMilli)
 }

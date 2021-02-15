@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.github.bchang.valrec.databinding.ActivityMainBinding
 import com.github.bchang.valrec.datastore.DataStoreViewModel
-import com.github.bchang.valrec.datastore.Record
+import com.github.bchang.valrec.datastore.createRecord
 import com.github.bchang.valrec.widget.chart.ValuesChart
 import com.github.bchang.valrec.widget.table.ValuesTableAdapter
 import java.time.Instant
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val viewModel by viewModels<DataStoreViewModel>()
 
         binding.fab.setOnClickListener {
-            viewModel.insert(Record(0, Instant.now().epochSecond, 3))
+            viewModel.insert(createRecord(Instant.now(), 3))
         }
 
         val valuesTable: RecyclerView = binding.root.findViewById(R.id.values_table)
