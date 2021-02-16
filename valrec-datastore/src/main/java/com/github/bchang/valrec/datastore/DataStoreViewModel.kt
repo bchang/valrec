@@ -20,7 +20,7 @@ class DataStoreViewModel(application: Application) : AndroidViewModel(applicatio
     fun load() {
         viewModelScope.launch {
             val records = withContext(Dispatchers.IO) {
-                appDatabase.recordDao().getAll()
+                appDatabase.init()
             }
             this@DataStoreViewModel.records.value = records
         }

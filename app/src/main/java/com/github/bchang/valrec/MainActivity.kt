@@ -14,6 +14,11 @@ import com.github.bchang.valrec.widget.table.ValuesTableAdapter
 import java.time.Instant
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        // TODO: total hack - hardcoded id for a default collection, since multiple collections are
+        //  not yet supported.
+        private const val COLLECTION_ID = 1L
+    }
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val viewModel by viewModels<DataStoreViewModel>()
 
         binding.fab.setOnClickListener {
-            viewModel.insert(createRecord(Instant.now(), 3))
+            viewModel.insert(createRecord(COLLECTION_ID, Instant.now(), 3))
         }
 
         val valuesTable: RecyclerView = binding.root.findViewById(R.id.values_table)

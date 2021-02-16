@@ -7,10 +7,10 @@ import androidx.room.Transaction
 
 @Dao
 internal interface RecordDao {
-    @Query("SELECT * FROM record")
-    fun getAll(): List<Record>
+    @Query("SELECT * FROM Record WHERE collectionId = :collectionId")
+    fun getAll(collectionId: Long): List<Record>
 
-    @Query("SELECT * FROM record WHERE uid = :recordId")
+    @Query("SELECT * FROM Record WHERE uid = :recordId")
     fun get(recordId: Long): Record
 
     @Insert
