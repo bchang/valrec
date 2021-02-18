@@ -12,6 +12,7 @@ import com.github.bchang.valrec.datastore.createRecord
 import com.github.bchang.valrec.widget.chart.ValuesChart
 import com.github.bchang.valrec.widget.table.ValuesTableAdapter
 import java.time.Instant
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         private const val COLLECTION_ID = 1L
     }
     private lateinit var binding: ActivityMainBinding
+    val rand = Random()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val viewModel by viewModels<DataStoreViewModel>()
 
         binding.fab.setOnClickListener {
-            viewModel.insert(createRecord(COLLECTION_ID, Instant.now(), 3))
+            viewModel.insert(createRecord(COLLECTION_ID, Instant.now(), rand.nextInt(16)))
         }
 
         val valuesTable: RecyclerView = binding.root.findViewById(R.id.values_table)
