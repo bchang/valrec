@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import com.anychart.AnyChart
 import com.anychart.AnyChartView
 import com.anychart.chart.common.dataentry.ValueDataEntry
+import com.anychart.charts.Cartesian
 import com.anychart.data.Set
 import com.anychart.enums.Interval
 import com.anychart.scales.DateTime
@@ -22,14 +23,15 @@ class ValuesChart @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr),
     Observer<List<Record>> {
 
-    private val anyChartView = AnyChartView(context, attrs, defStyleAttr)
-    private val chart = AnyChart.line()
-    private val dateTimeScale = DateTime.instantiate()
+    private val chart: Cartesian
+    private val dateTimeScale: DateTime
 
     init {
+        inflate(context, R.layout.values_chart, this)
+        chart = AnyChart.line()
+        dateTimeScale = DateTime.instantiate()
         chart.xScale(dateTimeScale)
-        anyChartView.setChart(chart)
-        addView(anyChartView)
+        findViewById<AnyChartView>(R.id.any_chart_view).setChart(chart)
     }
 
     override fun onChanged(records: List<Record>) {
