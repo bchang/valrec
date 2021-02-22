@@ -10,14 +10,27 @@ import java.util.concurrent.Callable
         Record::class
     ], version = 1
 )
-internal abstract class AppDatabase : RoomDatabase() {
-    abstract fun collectionDao(): CollectionDao
-    abstract fun recordDao(): RecordDao
+abstract class AppDatabase : RoomDatabase() {
+    internal abstract fun collectionDao(): CollectionDao
+    internal abstract fun recordDao(): RecordDao
 
     fun init(): List<Record> {
         return runInTransaction(Callable {
             val collectionId = collectionDao().ensureAtLeastOneCollection().first().uid
             recordDao().getAll(collectionId)
+        })
+    }
+
+    fun insertCollection(name: String, records: Sequence<Record>) {
+        return runInTransaction(Callable {
+            if (collectionDao().get(name) != null) {
+                throw IllegalArgumentException("Collection \"$name\" already exists")
+            }
+
+            val collectionId = collectionDao().insert(createCollection(name))
+            records.forEach {
+                recordDao().insert(it.withCollectionId(collectionId))
+            }
         })
     }
 }

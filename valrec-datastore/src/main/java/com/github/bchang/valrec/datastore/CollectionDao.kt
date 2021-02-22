@@ -8,6 +8,9 @@ internal interface CollectionDao {
     @Query("SELECT * FROM Collection WHERE uid = :collectionId")
     fun get(collectionId: Long): Collection
 
+    @Query("SELECT * FROM Collection WHERE name = :name")
+    fun get(name: String): Collection?
+
     @Query("SELECT COUNT(*) FROM Collection")
     fun getNumCollections(): Int
 

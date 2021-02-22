@@ -33,4 +33,15 @@ data class Record internal constructor(
 ) {
     @Ignore
     val timestamp: Instant = Instant.ofEpochMilli(tsEpochMilli)
+
+    internal fun withCollectionId(collectionId: Long) =
+        Record(this.uid, collectionId, this.tsEpochMilli, this.value)
+
+    override fun toString(): String {
+        return "Record(" +
+                "uid=$uid, " +
+                "collectionId=$collectionId, " +
+                "timestamp=$timestamp, " +
+                "value=$value)"
+    }
 }
